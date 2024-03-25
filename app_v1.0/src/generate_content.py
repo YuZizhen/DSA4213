@@ -267,13 +267,14 @@ def chat(chatbot_interaction):
             prompt_query = file.read()
 
         with client.connect(chat_session_id) as session:
-            reply = session.query(
+            session.query(
                 message = query,
                 system_prompt = system_prompt,
                 pre_prompt_query = pre_prompt_query,
                 prompt_query = prompt_query,
                 rag_config={"rag_type": "llm_only"},
                 timeout=60,
+                callback=stream_response,
             )
 
         client.delete_chat_sessions([chat_session_id])
