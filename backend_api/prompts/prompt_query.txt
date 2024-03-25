@@ -1,0 +1,4 @@
+According to only the information from the documents that were mentioned above, return only multiple choice questions based on the specidic documents that were mentioned in the above context.
+Please generate a list of questions following the format of the example. Note that each question is enclosed in a square bracket.
+Example of list of 2 Questions: 
+[[["Which country published the Lieber Code?"], ["1. The United States", "2. The United Kingdom", "3. Korea", "4. Japan"], [1]], [["When was the Liber Code published?"],["1. 1990", "2. 1978", "3. 2019", "4. 2000", "5. 1863"], [5]]]
