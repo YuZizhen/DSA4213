@@ -82,6 +82,7 @@ def landing_page_layout(q: Q):
             )
         ]
     )
+    
     q.page['header'] = ui.header_card(
         box='header',
         title=f"{q.app.toml['App']['Title']}",

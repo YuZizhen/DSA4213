@@ -235,22 +235,47 @@ def chat(chatbot_interaction):
     # client = H2OGPTE(address=os.getenv("H2OGPTE_URL"), api_key=os.getenv("H2OGPTE_API_TOKEN"))
 
     try:
-        client = H2OGPTE(address=os.getenv("H2OGPTE_URL"), api_key=api_key)
+        client = H2OGPTE(address='https://h2ogpte.genai.h2o.ai', api_key=api_key)
 
-        collection_id = client.create_collection("temp", "")
-        chat_session_id = client.create_chat_session(collection_id)
+        # collection_id = client.create_collection("temp", "")
+        # chat_session_id = client.create_chat_session(collection_id)
+
+        chat_session_id = client.create_chat_session_on_default_collection()
+
+        # with client.connect(chat_session_id) as session:
+        #     session.query(
+        #         system_prompt = f"You are an expert at generating questions based on chapter numbers." \
+        # f"Do not explain yourself, just return the text of the cycling training plan.",
+        #         message=chatbot_interaction.user_message,
+        #         timeout=60,
+        #         rag_config={"rag_type": "llm_only"},
+        #         callback=stream_response,
+        #     )
+
+        qns_count = 5
+        context = "Distinction and Proportionality"
+
+        query = f'Generate {qns_count} questions based on {context} File'
+
+        with open('../../backend_api/prompts/system_prompt.txt', 'r') as file:
+            system_prompt = file.read()
+
+        with open('../../backend_api/prompts/pre_prompt_query.txt', 'r') as file:
+            pre_prompt_query = file.read()
+
+        with open('../../backend_api/prompts/prompt_query.txt', 'r') as file:
+            prompt_query = file.read()
 
         with client.connect(chat_session_id) as session:
-            session.query(
-                system_prompt = f"You are an expert at generating questions based on chapter numbers." \
-        f"Do not explain yourself, just return the text of the cycling training plan.",
-                message=chatbot_interaction.user_message,
-                timeout=60,
+            reply = session.query(
+                message = query,
+                system_prompt = system_prompt,
+                pre_prompt_query = pre_prompt_query,
+                prompt_query = prompt_query,
                 rag_config={"rag_type": "llm_only"},
-                callback=stream_response,
+                timeout=60,
             )
 
-        client.delete_collections([collection_id])
         client.delete_chat_sessions([chat_session_id])
 
     except Exception as e:
