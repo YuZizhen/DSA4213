@@ -5,7 +5,7 @@ import asyncio
 
 from loguru import logger
 
-from src.wave_utils import heap_analytics
+from wave_utils import heap_analytics
 
 from h2ogpte import H2OGPTE
 from h2ogpte.types import ChatMessage, PartialChatMessage
@@ -334,8 +334,10 @@ def chat(chatbot_interaction):
         """
         chatbot_interaction.update_response(message)
 
+    api_key = 'sk-xjaaELLATk2Z8apfbv1nozXFTrHmQDuQHOLsOv5V3SR6wy0U'
+    address = 'https://h2ogpte.genai.h2o.ai'
     try:
-        client = H2OGPTE(address=os.getenv("H2OGPTE_URL"), api_key=os.getenv("H2OGPTE_API_TOKEN"))
+        client = H2OGPTE(address = address, api_key = api_key)
 
         collection_id = client.create_collection("temp", "")
         chat_session_id = client.create_chat_session(collection_id)
