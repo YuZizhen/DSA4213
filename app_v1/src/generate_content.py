@@ -6,35 +6,20 @@ from loguru import logger
 from h2ogpte.types import ChatMessage, PartialChatMessage
 from wave_utils import clear_cards
 
+#default number shown when app start
 def initialize_generate_content_client(q):
     logger.info("")
-##    q.client.weight = '170'
-##    q.client.heightFt = '5'
-##    q.client.heightInch = '10'
-##    q.client.weekFreq = '4x'
-##    q.client.conditionLevel = 'Beginner'
-##    q.client.setFtp = False
-##    q.client.reduceWeight = False
-##    q.client.currentFTP = '150'
-##    q.client.targetFTP = '210'
-##    q.client.timeGoal = False
-##    q.client.weeks = '8'
     q.client.chapter_number = '1'
     q.client.question_quantity = '1'
 
-
+#range of number availbale for selection
 async def side_input_generate_content(q):
     logger.info("")
     clear_cards(q)
-
-##    # Options for plan
-##    weekFreq = ['2x', '3x', '4x', '5x', '6x']
-##    conditionLevel = ['Beginner', 'Intermediate', 'Racer']
-
-    chapters = [str(i) for i in range(1, 101)]
+    chapters = [str(i) for i in range(1, 11)]
     quantities = [str(i) for i in range(1, 11)]
 
-    # User input form
+    #main ui for USER INPUT on the left
     q.page['help'] = ui.form_card(
         box='left',
         items=[
@@ -48,6 +33,7 @@ async def side_input_generate_content(q):
         ]
     )
 
+#######################Different types of ui samples.###########################
 ##            ui.textbox(
 ##                name='weight',
 ##                label='Your weight in pounds',
@@ -143,45 +129,15 @@ async def side_input_generate_content(q):
 ##
 ##        ]
 ##    )
+##############################################################################
 
-
+#on clicking button, send USER prompt to GPT
 @on()
 async def generate_prompt(q: Q):
     logger.info("")
 
-##    timeGoal = ""
-##    if q.client.timeGoal:
-##        timeGoal = f'''* Training weeks: {q.client.weeks}'''
-##
-##    setFtp = ""
-##    if q.client.setFtp:
-##        setFtp = f'''* Improve FTP: from {q.client.currentFTP} to {q.client.targetFTP}'''
-##
-##    reduceWeight = ""
-##    if q.client.reduceWeight:
-##        reduceWeight = "* Recommend healthy ways to lose weight that will support my workout regimen and my goal weight"
-##
-##    prompt = f'''Create an optimal cycling training program for a {q.client.conditionLevel} and an average working individual who stands at {q.client.heightFt} feet and {q.client.heightInch} inches tall and weighs {q.client.weight} pounds, utilizing the following setup:
-##
-##* Training frequency per week: {q.client.weekFreq}
-##{timeGoal}
-##{setFtp}
-##{reduceWeight}
-##
-##In response use table for week plan and make structured with markdown.
-##'''
-##
-##    q.client.prompt = prompt
-##
-##    q.page["training_plan"] = ui.form_card(
-##        box="right",
-##        items=[
-##            ui.text(content="", name="training_plan")
-##        ]
-##    )
 
     prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_number}."
-
     q.client.prompt = prompt
 
     q.page["generated_questions"] = ui.form_card(
@@ -194,17 +150,17 @@ async def generate_prompt(q: Q):
     q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt)
 
     # Prepare our UI-Streaming function so that it can run while the blocking LLM message interaction runs
-
     update_ui = asyncio.ensure_future(stream_updates_to_ui(q))
 
-    await q.run(chat, q.client.chatbot_interaction)
+    #save the LLM responses in the variable to use parser later on
+    q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
     await update_ui
     await q.page.save()
 
 
 async def stream_updates_to_ui(q: Q):
     """
-    Update the app's UI every 1/10th of a second with values from our chatbot interaction
+    Update the app's UI every 0.1 second with values from our chatbot interaction
     :param q: The query object stored by H2O Wave with information about the app and user behavior.
     """
 
@@ -241,22 +197,7 @@ def chat(chatbot_interaction):
         # chat_session_id = client.create_chat_session(collection_id)
 
         chat_session_id = client.create_chat_session_on_default_collection()
-
-        # with client.connect(chat_session_id) as session:
-        #     session.query(
-        #         system_prompt = f"You are an expert at generating questions based on chapter numbers." \
-        # f"Do not explain yourself, just return the text of the cycling training plan.",
-        #         message=chatbot_interaction.user_message,
-        #         timeout=60,
-        #         rag_config={"rag_type": "llm_only"},
-        #         callback=stream_response,
-        #     )
-
-        qns_count = 5
-        context = "Distinction and Proportionality"
-
-        query = f'Generate {qns_count} questions based on {context} File'
-
+        
         with open('../../backend_api/prompts/system_prompt.txt', 'r') as file:
             system_prompt = file.read()
 
@@ -266,18 +207,20 @@ def chat(chatbot_interaction):
         with open('../../backend_api/prompts/prompt_query.txt', 'r') as file:
             prompt_query = file.read()
 
+#save the session into "response" 
         with client.connect(chat_session_id) as session:
-            session.query(
-                message = query,
+            response = session.query(
+                message = chatbot_interaction.user_message,
                 system_prompt = system_prompt,
                 pre_prompt_query = pre_prompt_query,
                 prompt_query = prompt_query,
-                rag_config={"rag_type": "llm_only"},
                 timeout=60,
                 callback=stream_response,
             )
 
         client.delete_chat_sessions([chat_session_id])
+
+        return response
 
     except Exception as e:
         logger.error(e)
