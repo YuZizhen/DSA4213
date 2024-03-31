@@ -187,7 +187,8 @@ def chat(chatbot_interaction):
         """
         chatbot_interaction.update_response(message)
 
-    api_key = 'sk-xjaaELLATk2Z8apfbv1nozXFTrHmQDuQHOLsOv5V3SR6wy0U'
+    # api_key = 'sk-xjaaELLATk2Z8apfbv1nozXFTrHmQDuQHOLsOv5V3SR6wy0U'
+    api_key = 'sk-s664ThZtgjVvGG3Fl1mGN9gOVnfpg85dZBwMWQhb8YBqXbOT'
     # client = H2OGPTE(address=os.getenv("H2OGPTE_URL"), api_key=os.getenv("H2OGPTE_API_TOKEN"))
 
     try:
@@ -207,7 +208,7 @@ def chat(chatbot_interaction):
         with open('../../backend_api/prompts/prompt_query.txt', 'r') as file:
             prompt_query = file.read()
 
-#save the session into "response" 
+        #save the session into "response" 
         with client.connect(chat_session_id) as session:
             response = session.query(
                 message = chatbot_interaction.user_message,
