@@ -1,0 +1,7 @@
+Generate Multiple Choice Questions based on TEACHING MATERIALS provided above. The MCQ should have only one correct answer and three incorrect answers. The four candidate answers should be similar to each other or from other parts of the TEACH MATERIALS so to be confusing to students.
+Return only the Multiple Choice Questions with the below Python dictionary format. key 'title' is the string element of question body, key 'correct_answer' is string of the only correct answer to the question , key 'incorrect_answer' is a list of strings with each incorrect answer choice being a list element.
+Generate [5] different MCQs.
+```
+sample_qn = {"title":"Select number 1","correct_answer": "1","incorrect_answer":["2", "3", "4"]}
+```
+
