@@ -1,0 +1,21 @@
+Quality of Questions:
+-Relevance: Measure the relevance of the generated questions to the provided context or input.
+-Clarity: Assess the clarity of the questions in terms of language fluency, grammatical correctness, and coherence.
+
+Correctness of Answers:
+-Accuracy: Determine the accuracy of the correct answers provided by the algorithm.
+
+Difficulty Level:
+-Appropriateness: Assess whether the difficulty level of the questions aligns with university student standard.
+-Balanced Difficulty: (If possible) Ensure a balanced distribution of easy, medium, and hard questions.
+
+Novelty and Creativity:
+-Uniqueness: Evaluate the uniqueness of the generated questions compared to previous generated ones.
+-Creativity: Measure the algorithm's ability to generate creative and thought-provoking questions.
+
+Bias and Fairness:
+-Bias Detection: Identify and mitigate biases in question generation, such as cultural biases or gender biases.
+-Fairness: (If possible) Ensure fairness in question distribution across different topics, subjects, or demographics.
+
+Robustness and Error Handling:
+-Error Tolerance: This is not prompt evaluation. Ensure timeout errors are handdled and all the input collections have valid contents for MCQ generation.
