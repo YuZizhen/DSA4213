@@ -1,0 +1,63 @@
+Generate 10 MCQ questions based on given documents. If there are more than 1 question to be generated, generate MCQs of different difficulty levels.
+
+Here are 10 multiple choice questions based on the provided teaching materials:
+
+1. What was the name of the German law that defined who was considered a Jew?
+
+correct\_answer: "The Nuremberg Laws"
+
+incorrect\_answer: ["The Reich Citizenship Law", "The Law for the Protection of the German Blood and Honor", "The First Act from November 14, 1935"]
+
+2. Which of the following was NOT a reason why Nazi Germany considered the Jews to be the "biggest enemy"?
+
+correct\_answer: "The Jews were seen as less dangerous than the British Navy and American Industry"
+
+incorrect\_answer: ["The Jews were seen as the most dangerous enemy, the 'ultimate struggle'", "The Jews were considered to be a race, an infectious parasite", "The Nazis believed that the Jews were responsible for Germany's defeat in World War I"]
+
+3. What was the objective of the Final Solution?
+
+correct\_answer: "Genocide of the Jewish population in Europe"
+
+incorrect\_answer: ["To convert the Jewish population to Christianity", "To resettle the Jewish population in Madagascar", "To create a separate Jewish state in Palestine"]
+
+4. Which of the following was NOT a method used by the Einsatzgruppen to kill Jews during the Holocaust?
+
+correct\_answer: "Explosives"
+
+incorrect\_answer: ["Gunfire", "Gas vans", "Starvation"]
+
+5. Which of the following countries was NOT invaded by Nazi Germany during World War II?
+
+correct\_answer: "Sweden"
+
+incorrect\_answer: ["Norway", "Denmark", "Finland"]
+
+6. Which of the following was NOT a death camp used by the Nazis during the Holocaust?
+
+correct\_answer: "Dachau"
+
+incorrect\_answer: ["Treblinka", "Sobibor", "Majdanek"]
+
+7. Which of the following was NOT a reason why the Allies did not stop the Holocaust?
+
+correct\_answer: "Lack of knowledge about the extent of the Holocaust"
+
+incorrect\_answer: ["Lack of resources to mount a rescue operation", "Fear of retaliation from Nazi Germany", "Belief that the Jews were responsible for their own persecution"]
+
+8. Which of the following was NOT a target of the Einsatzgruppen during the Holocaust?
+
+correct\_answer: "Protestants"
+
+incorrect\_answer: ["Communists", "Jews", "Gypsies"]
+
+9. Which of the following was NOT a method used by the Nazis to dehumanize the Jews during the Holocaust?
+
+correct\_answer: "Allowing them to keep their personal belongings"
+
+incorrect\_answer: ["Forcing them to wear the Star of David", "Segregating them in ghettos", "Subjecting them to medical experiments"]
+
+10. Which of the following was NOT a consequence of the Holocaust?
+
+correct\_answer: "Increased tolerance and understanding between different religious and ethnic groups"
+
+incorrect\_answer: ["Decreased trust in government and authority figures", "Increased awareness of the dangers of discrimination and prejudice", "Long-lasting psychological trauma for survivors and their families"]
