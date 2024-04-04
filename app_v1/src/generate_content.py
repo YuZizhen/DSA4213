@@ -9,14 +9,14 @@ from wave_utils import clear_cards
 #default number shown when app start
 def initialize_generate_content_client(q):
     logger.info("")
-    q.client.chapter_number = '1'
+    q.client.chapter_name = ''
     q.client.question_quantity = '1'
 
 #range of number availbale for selection
 async def side_input_generate_content(q):
     logger.info("")
     clear_cards(q)
-    chapters = [str(i) for i in range(1, 11)]
+    chapters = ['The Holocaust', 'Hundred Years War', 'War and the Other', 'The Vikings']
     quantities = [str(i) for i in range(1, 11)]
 
     #main ui for USER INPUT on the left
@@ -24,8 +24,8 @@ async def side_input_generate_content(q):
         box='left',
         items=[
             ui.text_l("<b>Generate Questions</b>"),
-            ui.text("Select the chapter number and the number of questions to generate."),
-            ui.dropdown(name='chapter_number', label='Chapter Number', value=q.client.chapter_number, choices=[ui.choice(name=c, label=c) for c in chapters]),
+            ui.text("Select the chapter name and the number of questions to generate."),
+            ui.dropdown(name='chapter_name', label='Chapter Name', value=q.client.chapter_name, choices=[ui.choice(name=c, label=c) for c in chapters]),
             ui.dropdown(name='question_quantity', label='Number of Questions', value=q.client.question_quantity, choices=[ui.choice(name=q, label=q) for q in quantities]),
             ui.inline(justify='center', items=[
                 ui.button(name='generate_prompt', label='Generate Questions', primary=True)
@@ -137,7 +137,7 @@ async def generate_prompt(q: Q):
     logger.info("")
 
 
-    prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_number}."
+    prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_name}."
     q.client.prompt = prompt
 
     q.page["generated_questions"] = ui.form_card(
@@ -192,12 +192,14 @@ def chat(chatbot_interaction):
     # client = H2OGPTE(address=os.getenv("H2OGPTE_URL"), api_key=os.getenv("H2OGPTE_API_TOKEN"))
 
     try:
-        client = H2OGPTE(address='https://h2ogpte.genai.h2o.ai', api_key=api_key)
+        h2ogpte_client = H2OGPTE(address='https://h2ogpte.genai.h2o.ai', api_key=api_key)
 
         # collection_id = client.create_collection("temp", "")
         # chat_session_id = client.create_chat_session(collection_id)
 
-        chat_session_id = client.create_chat_session_on_default_collection()
+        collection_id = [item.id for item in h2ogpte_client.list_recent_collections(0, 1000) if item.name == q.client.chaper_name][0]
+        chat_session_id = h2ogpte_client.create_chat_session(collection_id)
+        # chat_session_id = client.create_chat_session_on_default_collection()
         
         with open('../../backend_api/prompts/system_prompt.txt', 'r') as file:
             system_prompt = file.read()
