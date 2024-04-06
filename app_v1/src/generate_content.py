@@ -5,6 +5,8 @@ from h2ogpte import H2OGPTE
 from loguru import logger
 from h2ogpte.types import ChatMessage, PartialChatMessage
 from wave_utils import clear_cards
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 #default number shown when app start
 def initialize_generate_content_client(q):
@@ -60,66 +62,78 @@ async def generate_prompt(q: Q):
     #q.client.prompt = prompt
     #q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt)
     #q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
-#
-    # Simulate fetching response from LLM or use your existing logic
-    # Assuming q.client.llm_response already contains the LLM response similar to the provided structure
-    # q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
     
-    # Let's pretend we've just populated q.client.llm_response with the structure you provided
-    # For the purpose of this example, I'm directly using the structure in the function for clarity
-
     q.client.llm_response = [
         [["What was the objective of Total War according to the document?"],
          ["1. The partial defeat of enemy physical power", "2. The complete defeat of enemy physical power",
           "3. The defeat of enemy economy", "4. The defeat of enemy military power"], [2]],
         [["What was the means of Total War according to the document?"], 
          ["1. Using minimal force", "2. Using whatever is required to achieve victory", "3. Avoiding battle", "4. Negotiating with the enemy"], [2]], 
+        [["Question 3"], 
+         ["1. 3A", "2. 3B", "3. 3C", "4. 3D"], [4]], 
+        [["Question 4"], 
+         ["1. 4A", "2. 4B", "3. 4C", "4. 4D"], [2]], 
     ] 
 
     items = []
     for index, (question, options, correct_answer_index) in enumerate(q.client.llm_response):
-        # Displaying question
-        items.append(ui.text(f"{index + 1}. {question[0]}"))
-        # Displaying options
+        items.append(ui.text(f"**{question[0]}**"))
         for option in options:
             items.append(ui.text(option))
-        # Adding a selection checkbox for the entire question
+        correct_option = options[correct_answer_index[0] - 1] 
+        items.append(ui.text(f"Correct answer: {correct_option}"))  
         items.append(ui.checkbox(name=f'select_{index}', label='Select this question', value=False))
-        # Displaying the correct answer
-        correct_option = options[correct_answer_index[0] - 1]  # Adjusting for zero-based indexing and accessing the correct answer
-        items.append(ui.text(f"Correct answer: {correct_option}"))
-
+        items.append(ui.text("<br/>"))
+        
     items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
 
     q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
     await q.page.save()
 
 @on('submit_selections')
-async def process_selections(q: Q):
-    logger.info(f"q.args: {q.args}")
-    selected_questions = []
+async def submit_selections(q: Q):
+    current_selected_questions = []
 
-    # Collecting selected questions
-    for index, question_data in enumerate(q.client.llm_response):
-        if q.args.get(f'select_{index}', False):
-            selected_questions.append(question_data)
+    for index, (question, options, correct_answer_index) in enumerate(q.client.llm_response):
+        try:
+            selected = q.args[f'select_{index}']
+        except KeyError:
+            selected = False
 
-    # Log after defining and populating selected_questions
-    logger.info(f"Selected questions: {selected_questions}")
+        if selected:
+            question_text = f"**{index + 1}. {question[0]}**\n"
+            options_text = "\n".join([f"   {opt}" for opt in options])
+            correct_option = options[correct_answer_index[0] - 1]
+            correct_answer_text = f"\nCorrect answer: {correct_option}"
 
-    # Preparing items for display
-    items = [ui.text('Selected questions:')]
-    for question_data in selected_questions:
-        question, options, correct_answer_index = question_data
-        question_text = question[0]  # Assuming question text is the first item
-        correct_option = options[correct_answer_index[0] - 1]  # Adjust for zero-based index and access
-        items.append(ui.text(f"Q: {question_text}"))
-        items.append(ui.text(f"Options: {', '.join(options)}"))
+            selected_question_details = f"{question_text}{options_text}\n\n{correct_answer_text}\n\n"
+            current_selected_questions.append(selected_question_details)
+            
+    if current_selected_questions:
+        items = [ui.text(question) for question in current_selected_questions]
+        q.page['selected_questions'] = ui.form_card(box='right', items=items)
+    else:
+        q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
+
+    # Reset checkboxes
+    items = []
+    for index, (question, options, correct_answer_index) in enumerate(q.client.llm_response):
+        items.append(ui.text(f"{index + 1}. {question[0]}"))
+        for option in options:
+            items.append(ui.text(option))
+        items.append(ui.checkbox(name=f'select_{index}', label='Select this question', value=False))
+        correct_option = options[correct_answer_index[0] - 1]
         items.append(ui.text(f"Correct answer: {correct_option}"))
+    
+    items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
 
-    # Update UI with selected questions, including details for each
-    q.page['selected_questions'] = ui.form_card(box='right', items=items)
+
+    q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
+
     await q.page.save()
+
+
+
 
 
 

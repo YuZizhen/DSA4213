@@ -4,7 +4,7 @@ import toml
 
 from loguru import logger
 
-from generate_content import initialize_generate_content_client, side_input_generate_content, process_selections
+from generate_content import initialize_generate_content_client, side_input_generate_content, submit_selections
 from wave_utils import heap_analytics
 
 
