@@ -33,144 +33,111 @@ async def side_input_generate_content(q):
         ]
     )
 
-#######################Different types of ui samples.###########################
-##            ui.textbox(
-##                name='weight',
-##                label='Your weight in pounds',
-##                width='100%',
-##                value=q.client.weight,
-##
-##            ),
-##
-##            ui.label(label='How tall are you?'),
-##
-##            ui.inline(justify='around',
-##                      items=[
-##                          ui.textbox(
-##                              name='heightFT',
-##                              label='Feet',
-##                              width='49%',
-##                              value=q.client.heightFt,
-##
-##                          ),
-##                          ui.textbox(
-##                              name='heightInch',
-##                              label='Inches',
-##                              width='49%',
-##                              value=q.client.heightInch,
-##
-##                          ),
-##                      ]),
-##
-##            ui.dropdown(name='conditionLevel', label='How experienced are you?', value=q.client.conditionLevel, choices=[
-##                ui.choice(name=i, label=i) for i in conditionLevel]),
-##
-##            ui.dropdown(name='weekFreq', label='How often do you want to get training per week?', value=q.client.weekFreq, choices=[
-##                ui.choice(name=i, label=i) for i in weekFreq]),
-##
-##            ui.toggle(
-##                name='reduceWeight',
-##                label='Do you want reduce weight recommendation?',
-##                value=q.client.reduceWeight),
-##
-##            ui.toggle(
-##                name='setFtp',
-##                label='Do you want improve your FTP?',
-##                trigger=True,
-##                value=q.client.setFtp),
-##
-##            ui.inline(
-##                justify='center',
-##                items=[
-##                    ui.textbox(
-##                        name='currentFTP',
-##                        label='Your current FTP',
-##                        width='49%',
-##                        value=q.client.currentFTP,
-##                        visible=q.client.setFtp
-##                    ),
-##                    ui.textbox(
-##                        name='targetFTP',
-##                        label='Your target FTP',
-##                        width='49%',
-##                        value=q.client.targetFTP,
-##                        visible=q.client.setFtp
-##                    ),
-##                ]
-##            ),
-##
-##            ui.toggle(
-##                name='timeGoal',
-##                trigger=True,
-##                label='Do you want training for a certain number of weeks?',
-##                value=q.client.timeGoal),
-##
-##            ui.inline(
-##                justify='center',
-##                items=[
-##                    ui.textbox(
-##                        name='weeks',
-##                        label='How many weeks do you want a training plan?',
-##                        width='100%',
-##                        value=q.client.weeks,
-##                        visible=q.client.timeGoal
-##                    ),
-##                ]
-##            ),
-##
-##
-##
-##            ui.inline(justify='center', items=[
-##                ui.button(
-##                      name='generate_prompt',
-##                      label='Generate Training Plan',
-##                      primary=True)
-##            ]),
-##
-##        ]
-##    )
-##############################################################################
-
+#PREVIOUS DIAPLAYING CONTENT DIRECTYLY ON WEBPAGE 'generate_prompt'
 #on clicking button, send USER prompt to GPT
+#@on()
+#async def generate_prompt(q: Q):
+#    logger.info("")
+#    prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_number}."
+#    q.client.prompt = prompt
+#   q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt)
+#   q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
+#
+#    items = [ui.text('Select the questions you are interested in:')]
+#    for index, question in enumerate(q.client.llm_response):
+#        question_text = question[0][0]  # Assuming the question is the first element
+#        items.append(ui.checkbox(name=f'select_{index}', label=question_text, value=False))
+
+#    items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
+    
+#    q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
+#    await q.page.save()
+
 @on()
 async def generate_prompt(q: Q):
-    logger.info("")
-
-
-    prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_number}."
-    q.client.prompt = prompt
-
-    q.page["generated_questions"] = ui.form_card(
-        box="right",
-        items=[
-            ui.text(content="", name="generated_questions")
-        ]
-    )
+    #logger.info("Generating questions")
+    #prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_number}."
+    #q.client.prompt = prompt
+    #q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt)
+    #q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
+#
+    # Simulate fetching response from LLM or use your existing logic
+    # Assuming q.client.llm_response already contains the LLM response similar to the provided structure
+    # q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
     
-    q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt)
+    # Let's pretend we've just populated q.client.llm_response with the structure you provided
+    # For the purpose of this example, I'm directly using the structure in the function for clarity
 
-    # Prepare our UI-Streaming function so that it can run while the blocking LLM message interaction runs
-    update_ui = asyncio.ensure_future(stream_updates_to_ui(q))
+    q.client.llm_response = [
+        [["What was the objective of Total War according to the document?"],
+         ["1. The partial defeat of enemy physical power", "2. The complete defeat of enemy physical power",
+          "3. The defeat of enemy economy", "4. The defeat of enemy military power"], [2]],
+        [["What was the means of Total War according to the document?"], 
+         ["1. Using minimal force", "2. Using whatever is required to achieve victory", "3. Avoiding battle", "4. Negotiating with the enemy"], [2]], 
+    ] 
 
-    #save the LLM responses in the variable to use parser later on
-    q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
-    await update_ui
+    items = []
+    for index, (question, options, correct_answer_index) in enumerate(q.client.llm_response):
+        # Displaying question
+        items.append(ui.text(f"{index + 1}. {question[0]}"))
+        # Displaying options
+        for option in options:
+            items.append(ui.text(option))
+        # Adding a selection checkbox for the entire question
+        items.append(ui.checkbox(name=f'select_{index}', label='Select this question', value=False))
+        # Displaying the correct answer
+        correct_option = options[correct_answer_index[0] - 1]  # Adjusting for zero-based indexing and accessing the correct answer
+        items.append(ui.text(f"Correct answer: {correct_option}"))
+
+    items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
+
+    q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
+    await q.page.save()
+
+@on('submit_selections')
+async def process_selections(q: Q):
+    logger.info(f"q.args: {q.args}")
+    selected_questions = []
+
+    # Collecting selected questions
+    for index, question_data in enumerate(q.client.llm_response):
+        if q.args.get(f'select_{index}', False):
+            selected_questions.append(question_data)
+
+    # Log after defining and populating selected_questions
+    logger.info(f"Selected questions: {selected_questions}")
+
+    # Preparing items for display
+    items = [ui.text('Selected questions:')]
+    for question_data in selected_questions:
+        question, options, correct_answer_index = question_data
+        question_text = question[0]  # Assuming question text is the first item
+        correct_option = options[correct_answer_index[0] - 1]  # Adjust for zero-based index and access
+        items.append(ui.text(f"Q: {question_text}"))
+        items.append(ui.text(f"Options: {', '.join(options)}"))
+        items.append(ui.text(f"Correct answer: {correct_option}"))
+
+    # Update UI with selected questions, including details for each
+    q.page['selected_questions'] = ui.form_card(box='right', items=items)
     await q.page.save()
 
 
-async def stream_updates_to_ui(q: Q):
-    """
-    Update the app's UI every 0.1 second with values from our chatbot interaction
-    :param q: The query object stored by H2O Wave with information about the app and user behavior.
-    """
 
-    while q.client.chatbot_interaction.responding:
-        q.page["generated_questions"].generated_questions.content = q.client.chatbot_interaction.content_to_show
-        await q.page.save()
-        await q.sleep(0.1)
+#async def stream_updates_to_ui(q: Q):
+#    """
+#    Update the app's UI every 0.1 second with values from our chatbot interaction
+#    :param q: The query object stored by H2O Wave with information about the app and user behavior.
+#    """
+#    while q.client.chatbot_interaction.responding:
+#        q.page["generated_questions"].generated_questions.content = q.client.chatbot_interaction.content_to_show
+#        await q.page.save()
+#        await q.sleep(0.1)
+#
+#    q.page["generated_questions"].generated_questions.content = q.client.chatbot_interaction.content_to_show
+#    await q.page.save()
 
-    q.page["generated_questions"].generated_questions.content = q.client.chatbot_interaction.content_to_show
-    await q.page.save()
+
+
 
 
 def chat(chatbot_interaction):
@@ -244,3 +211,6 @@ class ChatBotInteraction:
             if message.content != "#### LLM Only (no RAG):\n":
                 self.llm_response += message.content
                 self.content_to_show = self.llm_response + " 🟡"
+                
+                
+

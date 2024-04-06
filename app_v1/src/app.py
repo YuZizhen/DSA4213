@@ -4,7 +4,7 @@ import toml
 
 from loguru import logger
 
-from generate_content import initialize_generate_content_client, side_input_generate_content
+from generate_content import initialize_generate_content_client, side_input_generate_content, process_selections
 from wave_utils import heap_analytics
 
 
@@ -73,8 +73,9 @@ def landing_page_layout(q: Q):
                 zones=[
                     ui.zone(name='header'),
                     ui.zone('body', size='1', direction=ui.ZoneDirection.ROW, zones=[
-                        ui.zone('left', size='40%'),
-                        ui.zone('right', size='60%'),
+                        ui.zone(name='left', size='20%'),  # First zone takes up 20% of the space
+                    ui.zone(name='center', size='40%'),  # Second zone takes up 40% of the space
+                    ui.zone(name='right', size='40%'),  # Third zone takes up 40% of the space
                     ]),
                     ui.zone(name="footer")
                 ]
