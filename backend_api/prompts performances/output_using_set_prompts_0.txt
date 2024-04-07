@@ -1,0 +1,72 @@
+Generate 10 questions based given documents
+
+What was the biggest enemy according to the Nazis?
+1. The British Navy
+2. American Industry
+3. The Jews
+4. The Soviet Union
+[3]
+
+What was the name of the event on November 9, 1938?
+1. Kristallnacht
+2. The Nuremberg Laws
+3. The Holocaust
+4. The Final Solution
+[1]
+
+What was the objective of the Final Solution?
+1. To exploit the Jews for labor
+2. To exterminate the Jews
+3. To convert the Jews to Christianity
+4. To resettle the Jews in Madagascar
+[2]
+
+What was the name of the mobile killing units used in the East?
+1. Einsatzgruppen
+2. The Gestapo
+3. The SS
+4. The Wehrmacht
+[1]
+
+What was the name of the event where Goering charged Heydrich with making preparations for the Final Solution?
+1. The Wannsee Conference
+2. The Nuremberg Laws
+3. Directive, July 1941
+4. Kristallnacht
+[3]
+
+What was the name of the event where Hitler announced that the war would result in the destruction of Jewry?
+1. The Nuremberg Laws
+2. The Holocaust
+3. September 3, 1939 speech
+4. The Final Solution
+[3]
+
+What was the name of the event where the General Staff demanded peace and the SPD signed the Treaty of Versailles?
+1. The Great War and the Treaty of Versailles
+2. The Revolution could spread to Germany after the WWI
+3. Scapegoats and villains
+4. The ¡®Race Nation¡¯ and the course of history
+[1]
+
+What was the name of the event where the Nazis charged the Jews with betraying Jesus?
+1. The blood libel and the weight of history
+2. The Jews, the world over love liberty
+3. The issue of christendom: betraying Jesus
+4. Nationalism and a diaspora
+[3]
+
+What was the name of the event where the Nazis passed laws to define who was a Jew?
+1. The Nuremberg Laws
+2. The Holocaust
+3. The Final Solution
+4. The Wannsee Conference
+[1]
+
+What was the name of the event where the Nazis began to exterminate Jews using gas chambers?
+1. The Wannsee Conference
+2. The Holocaust
+3. The Final Solution
+4. Auschwitz-Birkenau
+[4]
+

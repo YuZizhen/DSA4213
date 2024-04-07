@@ -1,0 +1,83 @@
+Generate 10 MCQ questions based on given documents. If there are more than 1 question to be generated, generate MCQs of different difficulty levels.
+
+Here are ten multiple choice questions based on the provided documents:
+
+1. According to the Nuremberg Laws, what determines whether someone is considered a Jew?
+	* Race
+	* Religion
+	* Customs
+	* All of the above
+	
+Answer: All of the above
+
+2. What was the objective of the Final Solution according to the Wannsee Conference in January 1942?
+	* To expel Jews from the German sphere of influence in Europe
+	* To isolate Jews in ghettos
+	* To exterminate Jews
+	* To convert Jews to Christianity
+	
+Answer: To exterminate Jews
+
+3. Which of the following countries was not part of the Axis powers during World War II?
+	* Italy
+	* France
+	* Hungary
+	* Japan
+	
+Answer: France
+
+4. What was the name of the operation to exterminate Jews in the Soviet Union?
+	* Operation Barbarossa
+	* Operation Reinhard
+	* Operation Typhoon
+	* Operation Eisenhammer
+	
+Answer: Operation Reinhard
+
+5. Which of the following was not a death camp used during the Final Solution?
+	* Treblinka
+	* Auschwitz-Birkenau
+	* Buchenwald
+	* Sobibor
+	
+Answer: Buchenwald
+
+6. What was the name of the mobile killing units used during the Final Solution?
+	* Einsatzgruppen
+	* Sonderkommandos
+	* Ordnungspolizei
+	* Schutzstaffel
+	
+Answer: Einsatzgruppen
+
+7. Which of the following countries was not invaded by Nazi Germany during World War II?
+	* Denmark
+	* Norway
+	* Sweden
+	* Finland
+	
+Answer: Sweden
+
+8. What was the name of the directive issued by Hermann Göring to Reinhard Heydrich regarding the Final Solution?
+	* Directive 16
+	* Directive 30
+	* Directive 46
+	* Directive 61
+	
+Answer: Directive 30
+
+9. Which of the following was not a reason given by the Nazis for the need to exterminate Jews?
+	* Jews were responsible for communism
+	* Jews were responsible for capitalism
+	* Jews were responsible for the spread of diseases
+	* Jews were responsible for the loss of World War I
+	
+Answer: Jews were responsible for capitalism
+
+10. Which of the following was not a method used by the Nazis to dehumanize Jews?
+	* Forcing Jews to wear the Star of David
+	* Confiscating property from Jews
+	* Forcing Jews to live in ghettos
+	* Making Jews eat pork
+	
+Answer: Making Jews eat pork

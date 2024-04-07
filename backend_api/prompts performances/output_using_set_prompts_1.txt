@@ -1,0 +1,56 @@
+Generate 10 questions based given documents
+
+```python
+[
+    {
+        "title": "What was the fate of children born to mixed marriages established after September 17, according to Reich law?",
+        "correct_answer": "They were considered to be Jews",
+        "incorrect_answer": ["They were considered to be of mixed ancestry", "They were considered to be Reich citizens", "They were considered to be German"]
+    },
+    {
+        "title": "Which of the following was NOT a reason for the Nazis to consider the Jews as the ultimate enemy?",
+        "correct_answer": "They refused to be assimilated",
+        "incorrect_answer": ["They were seen as an infectious parasite", "They were considered a race", "They were considered a state enemy"]
+    },
+    {
+        "title": "What was the objective of the Einsatzgruppen during the war in the East?",
+        "correct_answer": "Genocide",
+        "incorrect_answer": ["Occupation and exploitation", "Collection and evacuation", "Dehumanizing"]
+    },
+    {
+        "title": "What was the name of the directive issued by Goering to Heydrich regarding the Final Solution?",
+        "correct_answer": "July 1941",
+        "incorrect_answer": ["January 1942", "September 1939", "April 1940"]
+    },
+    {
+        "title": "How many Jews were killed during the Final Solution?",
+        "correct_answer": "5.9 million",
+        "incorrect_answer": ["4.5 million", "6.3 million", "7.2 million"]
+    },
+    {
+        "title": "What was the name of the conference where the Final Solution was discussed?",
+        "correct_answer": "The Wannsee Conference",
+        "incorrect_answer": ["The Berlin Conference", "The Munich Conference", "The Nuremberg Conference"]
+    },
+    {
+        "title": "What was the name of the operation where the Einsatzgruppen rounded up and executed Jews?",
+        "correct_answer": "VON DER EINSATZGRUPPE A DURCHGEFUHRIE JUDENEXEKUTIONEN",
+        "incorrect_answer": ["VON DER EINSATZGRUPPE B DURCHGEFUHRIE JUDENEXEKUTIONEN", "VON DER EINSATZGRUPPE C DURCHGEFUHRIE JUDENEXEKUTIONEN", "VON DER EINSATZGRUPPE D DURCHGEFUHRIE JUDENEXEKUTIONEN"]
+    },
+    {
+        "title": "What was the name of the directive issued by Hitler regarding the destruction of Jewry?",
+        "correct_answer": "September 3, 1939",
+        "incorrect_answer": ["September 1, 1939", "September 5, 1939", "September 10, 1939"]
+    },
+    {
+        "title": "What was the name of the law that determined the bestowment of Reich citizenship?",
+        "correct_answer": "Reich Citizen Law from September 15, 1935",
+        "incorrect_answer": ["Citizenship Law from September 15, 1935", "Nationality Law from September 15, 1935", "People's Law from September 15, 1935"]
+    },
+    {
+        "title": "What was the name of the operation where the Einsatzgruppen transported Jews to the death camps?",
+        "correct_answer": "Industrial killing: the death camps",
+        "incorrect_answer": ["Mobile killing: the death camps", "Mechanical killing: the death camps", "Manual killing: the death camps"]
+    }
+]
+```
