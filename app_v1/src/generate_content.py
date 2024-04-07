@@ -6,19 +6,19 @@ from loguru import logger
 from h2ogpte.types import ChatMessage, PartialChatMessage
 from wave_utils import clear_cards
 import logging
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 #default number shown when app start
 def initialize_generate_content_client(q):
     logger.info("")
-    q.client.chapter_number = '1'
+    q.client.chapter_name = ''
     q.client.question_quantity = '1'
 
 #range of number availbale for selection
 async def side_input_generate_content(q):
     logger.info("")
     clear_cards(q)
-    chapters = [str(i) for i in range(1, 11)]
+    chapters = ['The Holocaust', 'Hundred Years War', 'War and the Other', 'The Vikings']
     quantities = [str(i) for i in range(1, 11)]
 
     #main ui for USER INPUT on the left
@@ -26,8 +26,8 @@ async def side_input_generate_content(q):
         box='left',
         items=[
             ui.text_l("<b>Generate Questions</b>"),
-            ui.text("Select the chapter number and the number of questions to generate."),
-            ui.dropdown(name='chapter_number', label='Chapter Number', value=q.client.chapter_number, choices=[ui.choice(name=c, label=c) for c in chapters]),
+            ui.text("Select the chapter name and the number of questions to generate."),
+            ui.dropdown(name='chapter_name', label='Chapter Name', value=q.client.chapter_name, choices=[ui.choice(name=c, label=c) for c in chapters]),
             ui.dropdown(name='question_quantity', label='Number of Questions', value=q.client.question_quantity, choices=[ui.choice(name=q, label=q) for q in quantities]),
             ui.inline(justify='center', items=[
                 ui.button(name='generate_prompt', label='Generate Questions', primary=True)
@@ -57,23 +57,25 @@ async def side_input_generate_content(q):
 
 @on()
 async def generate_prompt(q: Q):
-    #logger.info("Generating questions")
-    #prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_number}."
-    #q.client.prompt = prompt
-    #q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt)
-    #q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
+    logger.info("Generating questions")
+    prompt = f"Generate {q.client.question_quantity} MCQ questions based on given documents."
+    q.client.prompt = prompt
+    q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt, chapter_name=q.client.chapter_name, question_quantity=q.client.question_quantity)
+    q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
+    print("LLM RESPONSE:")
+    print(q.client.llm_response)
     
-    q.client.llm_response = [
-        [["What was the objective of Total War according to the document?"],
-         ["1. The partial defeat of enemy physical power", "2. The complete defeat of enemy physical power",
-          "3. The defeat of enemy economy", "4. The defeat of enemy military power"], [2]],
-        [["What was the means of Total War according to the document?"], 
-         ["1. Using minimal force", "2. Using whatever is required to achieve victory", "3. Avoiding battle", "4. Negotiating with the enemy"], [2]], 
-        [["Question 3"], 
-         ["1. 3A", "2. 3B", "3. 3C", "4. 3D"], [4]], 
-        [["Question 4"], 
-         ["1. 4A", "2. 4B", "3. 4C", "4. 4D"], [2]], 
-    ] 
+    # q.client.llm_response = [
+    #     [["What was the objective of Total War according to the document?"],
+    #      ["1. The partial defeat of enemy physical power", "2. The complete defeat of enemy physical power",
+    #       "3. The defeat of enemy economy", "4. The defeat of enemy military power"], [2]],
+    #     [["What was the means of Total War according to the document?"], 
+    #      ["1. Using minimal force", "2. Using whatever is required to achieve victory", "3. Avoiding battle", "4. Negotiating with the enemy"], [2]], 
+    #     [["Question 3"], 
+    #      ["1. 3A", "2. 3B", "3. 3C", "4. 3D"], [4]], 
+    #     [["Question 4"], 
+    #      ["1. 4A", "2. 4B", "3. 4C", "4. 4D"], [2]], 
+    # ] 
 
     items = []
     for index, (question, options, correct_answer_index) in enumerate(q.client.llm_response):
@@ -177,16 +179,18 @@ def chat(chatbot_interaction):
 
         # collection_id = client.create_collection("temp", "")
         # chat_session_id = client.create_chat_session(collection_id)
-
-        chat_session_id = client.create_chat_session_on_default_collection()
+        collection_names = [item.name for item in client.list_recent_collections(0, 1000)]
+        target_chapter_name =  chatbot_interaction.chapter_name
+        curr_collection_id = [item.id for item in client.list_recent_collections(0, 1000) if item.name == target_chapter_name][0]
+        chat_session_id = client.create_chat_session(curr_collection_id)
         
-        with open('../../backend_api/prompts/system_prompt.txt', 'r') as file:
+        with open('../../backend_api/prompts_0/system_prompt.txt', 'r') as file:
             system_prompt = file.read()
 
-        with open('../../backend_api/prompts/pre_prompt_query.txt', 'r') as file:
+        with open('../../backend_api/prompts_0/pre_prompt_query.txt', 'r') as file:
             pre_prompt_query = file.read()
 
-        with open('../../backend_api/prompts/prompt_query.txt', 'r') as file:
+        with open('../../backend_api/prompts_0/prompt_query.txt', 'r') as file:
             prompt_query = file.read()
 
         #save the session into "response" 
@@ -210,8 +214,10 @@ def chat(chatbot_interaction):
 
 
 class ChatBotInteraction:
-    def __init__(self, user_message) -> None:
+    def __init__(self, user_message, chapter_name, question_quantity) -> None:
         self.user_message = user_message
+        self.chapter_name = chapter_name
+        self.question_quantity = question_quantity
         self.responding = True
 
         self.llm_response = ""
@@ -225,6 +231,3 @@ class ChatBotInteraction:
             if message.content != "#### LLM Only (no RAG):\n":
                 self.llm_response += message.content
                 self.content_to_show = self.llm_response + " 🟡"
-                
-                
-
