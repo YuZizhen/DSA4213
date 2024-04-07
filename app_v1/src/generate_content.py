@@ -6,6 +6,7 @@ from loguru import logger
 from h2ogpte.types import ChatMessage, PartialChatMessage
 from wave_utils import clear_cards
 import logging
+import json
 # logging.basicConfig(level=logging.DEBUG)
 
 #default number shown when app start
@@ -61,9 +62,12 @@ async def generate_prompt(q: Q):
     prompt = f"Generate {q.client.question_quantity} MCQ questions based on given documents."
     q.client.prompt = prompt
     q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt, chapter_name=q.client.chapter_name, question_quantity=q.client.question_quantity)
-    q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
-    print("LLM RESPONSE:")
-    print(q.client.llm_response)
+    await q.run(chat, q.client.chatbot_interaction)
+    print(q.client.chatbot_interaction.llm_response)
+    print(type(q.client.chatbot_interaction.llm_response))
+    response = json.loads(q.client.chatbot_interaction.llm_response)
+    print(type(response))
+    q.client.llm_response = response
     
     # q.client.llm_response = [
     #     [["What was the objective of Total War according to the document?"],
@@ -74,7 +78,7 @@ async def generate_prompt(q: Q):
     #     [["Question 3"], 
     #      ["1. 3A", "2. 3B", "3. 3C", "4. 3D"], [4]], 
     #     [["Question 4"], 
-    #      ["1. 4A", "2. 4B", "3. 4C", "4. 4D"], [2]], 
+    #      ["1. 4A", "2. 4B", "3. 4C", "4. 4D"], [2]]
     # ] 
 
     items = []
@@ -195,7 +199,7 @@ def chat(chatbot_interaction):
 
         #save the session into "response" 
         with client.connect(chat_session_id) as session:
-            response = session.query(
+            session.query(
                 message = chatbot_interaction.user_message,
                 system_prompt = system_prompt,
                 pre_prompt_query = pre_prompt_query,
@@ -205,8 +209,10 @@ def chat(chatbot_interaction):
             )
 
         client.delete_chat_sessions([chat_session_id])
+        output = chatbot_interaction.llm_response
+        # print(output)
 
-        return response
+        return output
 
     except Exception as e:
         logger.error(e)
