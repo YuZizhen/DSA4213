@@ -1,3 +1,4 @@
+import ast
 import os
 import asyncio
 from h2o_wave import on, ui, Q
@@ -65,7 +66,7 @@ async def generate_prompt(q: Q):
     await q.run(chat, q.client.chatbot_interaction)
     print(q.client.chatbot_interaction.llm_response)
     print(type(q.client.chatbot_interaction.llm_response))
-    response = json.loads(q.client.chatbot_interaction.llm_response)
+    response = ast.literal_eval(q.client.chatbot_interaction.llm_response)
     print(type(response))
     q.client.llm_response = response
     
@@ -102,8 +103,6 @@ async def generate_prompt(q: Q):
         label = 'Question ' + str(question_index + 1) + ": " + question[0]
         
         items.append(ui.checkbox(name=f'select_{question_index}', label=f"{label}", value=False))
-        # items.append(ui.text(f"**{question_index + 1}**"))
-        # items.append(ui.text(question[0]))
         correct_option = question[2]
         correct_option_index = 0
         for option_index in range(0, len(question[1])):
@@ -230,6 +229,8 @@ def chat(chatbot_interaction):
                 prompt_query = prompt_query,
                 timeout=60,
                 callback=stream_response,
+                llm_args={"temperature": 0.9},
+                llm = 'gpt-35-turbo-1106',
             )
 
         client.delete_chat_sessions([chat_session_id])
