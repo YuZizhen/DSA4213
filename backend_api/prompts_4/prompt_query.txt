@@ -1,5 +1,5 @@
 According to only the information from the documents that were mentioned above, return only multiple choice questions based on the specific documents that were mentioned in the above context. You should not return me anything else other than formatted MCQ.
-Generate MCQs using Python 2-D list format, strictly following the below sample output format. Each MCQ is a list object, with the first item being the question, the second item being a list of candicate choices and the third item being the correct answer.
+Generate MCQs using Python 2-D list format, strictly following the below sample output format. Each MCQ is a list object, with the first item being the question, the second item being a list of candicate choices (4 choices) and the third item being the correct answer.
 
 Sample output of list of 3 Questions: 
 [["Which country published the Lieber Code?",["The United States","The United Kingdom","Korea","Japan"],"The United States"],["When was the Liber Code published?",["1983","1990","1978","2000"],"1983"],[" According to the Nuremberg Laws, what determines whether someone is considered a Jew?",["Race","Religion","Customs","All of the above"],"All of the above"]]

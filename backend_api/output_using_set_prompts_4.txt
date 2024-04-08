@@ -1,72 +1,23 @@
-Generate 10 MCQ questions based on given documents.
+Generate 1 MCQ questions based on given documents.
 
-What was the main objective of Total War?
-The complete defeat of enemy physical power
-To maintain peace
-To negotiate with the enemy
-None of the above
-The complete defeat of enemy physical power
+According to the information, why did Nazi Germany continue the war against the Jewish people?
+To achieve complete defeat of enemy physical power
+For special non-military purposes
+To remove the Jews from German national life
+To restore history to the 'right kind of people'
+To achieve complete defeat of enemy physical power
 
-What was the name of the operation to 'sort out the Jews' in Poland?
-Operation Barbarossa
-Operation Sealion
-Operation Reinhard
-Operation Overlord
-Operation Reinhard
+What was the objective of the Final Solution?
+To achieve complete defeat of enemy physical power
+To achieve a systematic project of total war
+Genocide
+To escalate the level of violence
+Genocide
 
-Who was responsible for making preparations for the 'Final Solution' according to Goering's directive?
-Heydrich
-Himmler
-Goebbels
-Eichmann
-Heydrich
-
-What was the name of the conference where the 'Final Solution' was discussed?
-The Wannsee Conference
-The Yalta Conference
-The Tehran Conference
-The Casablanca Conference
-The Wannsee Conference
-
-What was the name of the mobile killing units used by the Nazis in the East?
-The Einsatzgruppen
-The Gestapo
-The SS
-The Abwehr
-The Einsatzgruppen
-
-What was the name of the operation to kill disabled individuals in Germany?
-Operation T4
-Operation Paperclip
-Operation Nordpol
-Operation Barbarossa
-Operation T4
-
-What was the name of the operation to kill Jews in gas vans?
-Operation T4
-Operation Paperclip
-Operation Reinhard
-Operation Nordpol
-Operation Reinhard
-
-What was the name of the operation to kill Jews in gas chambers?
-Operation T4
-Operation Paperclip
-Operation Reinhard
-Operation Nordpol
-Operation Reinhard
-
-What was the number of Jews killed during the Holocaust?
-5.9 million
-6.3 million
-5.5 million
-5.1 million
-5.9 million
-
-What was the number of Polish and Soviet civilians and prisoners of war killed during the Holocaust?
-5 million
-6 million
-7 million
-8 million
-5 million
+What determined whether someone was considered a Jew according to the Nuremberg Laws?
+Race
+Religion
+Customs
+All of the above
+All of the above
 
