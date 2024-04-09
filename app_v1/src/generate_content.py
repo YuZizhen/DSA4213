@@ -222,7 +222,7 @@ def chat(chatbot_interaction):
                 timeout=60,
                 callback=stream_response,
                 llm_args={"temperature": 0.9},
-                llm = 'gpt-35-turbo-1106',
+                llm = 'gpt-4-1106-preview',
             )
 
         #client.delete_chat_sessions([chat_session_id])
