@@ -24,7 +24,7 @@ form_service = discovery.build(
 ######################################
 
 result = gf.create_new_quiz('test function', form_service = form_service)
-form_id = result["formID"]
+form_id = result["formId"]
 # form_id = "1WZlajQ0OsB_t6aUVUqPJd48Y0utRlRQyTfFVn2tt0v0"
 sample_qn = {
   "title" : "qn1: select number 1",
