@@ -14,7 +14,7 @@ import json
 def initialize_generate_content_client(q):
     logger.info("")
     q.client.chapter_name = ''
-    q.client.question_quantity = '1'
+    q.client.question_quantity = '(Minimum 3 questions)'
     if 'current_selected_questions' not in q.client:
         q.client.current_selected_questions = []
 
@@ -23,7 +23,7 @@ async def side_input_generate_content(q):
     logger.info("")
     clear_cards(q)
     chapters = ['The Holocaust', 'Hundred Years War', 'War and the Other', 'The Vikings']
-    quantities = [str(i) for i in range(1, 11)]
+    quantities = [str(i) for i in range(3, 11)]
 
     #main ui for USER INPUT on the left
     q.page['help'] = ui.form_card(
@@ -39,80 +39,56 @@ async def side_input_generate_content(q):
         ]
     )
 
-#PREVIOUS DIAPLAYING CONTENT DIRECTYLY ON WEBPAGE 'generate_prompt'
-#on clicking button, send USER prompt to GPT
-#@on()
-#async def generate_prompt(q: Q):
-#    logger.info("")
-#    prompt = f"Generate {q.client.question_quantity} questions for Chapter {q.client.chapter_number}."
-#    q.client.prompt = prompt
-#   q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt)
-#   q.client.llm_response = await q.run(chat, q.client.chatbot_interaction)
-#
-#    items = [ui.text('Select the questions you are interested in:')]
-#    for index, question in enumerate(q.client.llm_response):
-#        question_text = question[0][0]  # Assuming the question is the first element
-#        items.append(ui.checkbox(name=f'select_{index}', label=question_text, value=False))
-
-#    items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
-    
-#    q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
-#    await q.page.save()
-
+#edited to accomodate error
 @on()
 async def generate_prompt(q: Q):
     logger.info("Generating questions")
     prompt = f"Generate {q.client.question_quantity} MCQ questions based on given documents."
     q.client.prompt = prompt
     q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt, chapter_name=q.client.chapter_name, question_quantity=q.client.question_quantity)
-    await q.run(chat, q.client.chatbot_interaction)
-    print(q.client.chatbot_interaction.llm_response)
-    print(type(q.client.chatbot_interaction.llm_response))
-    response = ast.literal_eval(q.client.chatbot_interaction.llm_response)
-    print(type(response))
-    q.client.llm_response = response
-    
-    #q.client.llm_response = [
-    #     ["What was the objective of Total War according to the document?",
-    #      ["1. The partial defeat of enemy physical power", "2. The complete defeat of enemy physical power",
-    #       "3. The defeat of enemy economy", "4. The defeat of enemy military power"], "4. The defeat of enemy military power"]] 
 
-    # items = []
-    # for index, (question, options, correct_answer_index) in enumerate(q.client.llm_response):
-    #     items.append(ui.text(f"**{question[0]}**"))
-    #     for option in options:
-    #         items.append(ui.text(option))
-    #     correct_option = options[correct_answer_index[0] - 1] 
-    #     items.append(ui.text(f"Correct answer: {correct_option}"))  
-    #     items.append(ui.checkbox(name=f'select_{index}', label='Select this question', value=False))
-    #     items.append(ui.text("<br/>"))
-        
-    # items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
+    max_attempts = 5
+    attempt_count = 0
 
-    # q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
-    # await q.page.save()
+    while attempt_count < max_attempts:
+        attempt_count += 1
+        await q.run(chat, q.client.chatbot_interaction)
 
-    items = []
-    for question_index in range(0, len(q.client.llm_response)):
-        question = q.client.llm_response[question_index]
-        label = 'Question ' + str(question_index + 1) + ": " + question[0]
+        try:
+            response = ast.literal_eval(q.client.chatbot_interaction.llm_response)
+            q.client.llm_response = response
         
-        items.append(ui.checkbox(name=f'select_{question_index}', label=f"{label}", value=False))
-        correct_option = question[2]
-        correct_option_index = 0
-        for option_index in range(0, len(question[1])):
-            items.append(ui.text(str(option_index + 1) + ". " + question[1][option_index]))
-            if question[1][option_index] == correct_option:
-                correct_option_index = str(option_index + 1)
-        
-        items.append(ui.text("Correct answer: " + correct_option_index))  
-        
-        items.append(ui.text("<br/>"))
-        
-    items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
+            items = []
+            for question_index in range(0, len(q.client.llm_response)):
+                question = q.client.llm_response[question_index]
+                label = 'Question ' + str(question_index + 1) + ": " + question[0]
+            
+                items.append(ui.checkbox(name=f'select_{question_index}', label=f"{label}", value=False))
+                correct_option = question[2]
+                correct_option_index = 0
+                for option_index in range(0, len(question[1])):
+                    items.append(ui.text(str(option_index + 1) + ". " + question[1][option_index]))
+                    if question[1][option_index] == correct_option:
+                        correct_option_index = str(option_index + 1)
+            
+                items.append(ui.text("Correct answer: " + correct_option_index))  
+            
+                items.append(ui.text("<br/>"))
+            
+            items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
 
-    q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
-    await q.page.save()
+            q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
+            await q.page.save()
+
+            break
+
+        except (ValueError, IndexError, KeyError):
+            if attempt_count < max_attempts:
+                logger.warning(f"Attempt {attempt_count}: Incorrect response format. Retrying...")
+            else:
+                logger.error("Maximum attempts reached. Unable to generate valid questions.")
+                q.page["error_message"] = ui.form_card(box="center", items=[ui.text("Error: Unable to generate valid questions. Please try again.")])
+                await q.page.save()
 
 @on('submit_selections')
 async def submit_selections(q: Q):
@@ -122,28 +98,39 @@ async def submit_selections(q: Q):
         try:
             selected = q.args[f'select_{index}']
             if selected:
-                question_text = f"**{question_data[0]}**\n\n"  # Question text
+                question_text = f"**{question_data[0]}**"  # Question text
                 options_text = "\n\n".join([f"   {opt_index + 1}. {option}" for opt_index, option in enumerate(question_data[1])])  # Options list
                 correct_option = question_data[2]  # Correct option is now directly a string
-                correct_answer_text = f"\nCorrect answer: {correct_option}"
+                correct_answer_index = question_data[1].index(correct_option) + 1
 
                 
                 # Construct the details for the selected question
-                selected_question_details = f"{question_text}{options_text}\n\n{correct_answer_text}\n\n"
-                
-                # Check if this selected question detail is already in the list to avoid duplication
-                if selected_question_details not in q.client.current_selected_questions:
-                    new_selections.append(selected_question_details)
+                selected_question_details = f"{question_text}\n\n{options_text}\n\nCorrect answer: {correct_answer_index}\n\n"                 
+                new_selections.append(selected_question_details)
+
         except KeyError:
             continue  # If the checkbox was not found, just continue to the next
     
     # Update the list of selected questions with any new selections
     q.client.current_selected_questions.extend(new_selections)
+
+    items = []
+    for index, question_details in enumerate(q.client.current_selected_questions):
+        question_lines = question_details.split('\n\n')
+        question_text = question_lines[0]
+        options_text = '\n\n'.join(question_lines[1:-2])
+        correct_answer_index = question_lines[-2].split(': ')[1]
+        
+        items.append(ui.inline(items=[
+            ui.checkbox(name=f'remove_{index}', label='', value=False),
+            ui.text(question_text)
+        ]))
+        items.append(ui.text(options_text))
+        items.append(ui.text(f"Correct answer: {correct_answer_index}"))
+        items.append(ui.separator())
     
-    # Display the updated list of selected questions
-    if q.client.current_selected_questions:
-        items = [ui.text(question) for question in q.client.current_selected_questions]
-        items.append(ui.button(name='reset_selections', label='Reset Selections', primary=False))
+    if items:
+        items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False))
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
     else:
         q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
@@ -151,28 +138,45 @@ async def submit_selections(q: Q):
     await q.page.save()
 
 
+#new function to remove selection
+@on('remove_selections')
+async def remove_selections(q: Q):
+    updated_selections = []
 
+    for index, question_details in enumerate(q.client.current_selected_questions):
+        try:
+            remove = q.args[f'remove_{index}']
+            if not remove:
+                updated_selections.append(question_details)
+        except KeyError:
+            updated_selections.append(question_details)  # If the checkbox was not found, keep the question
+    
+    # Update the list of selected questions
+    q.client.current_selected_questions = updated_selections
+    
+    # Display the updated list of selected questions with inline checkboxes
+    items = []
+    for index, question_details in enumerate(q.client.current_selected_questions):
+        question_lines = question_details.split('\n\n')
+        question_text = question_lines[0]
+        options_text = '\n\n'.join(question_lines[1:-2])
+        correct_answer_index = question_lines[-2].split(': ')[1]
+        
+        items.append(ui.inline(items=[
+            ui.checkbox(name=f'remove_{index}', label='', value=False),
+            ui.text(question_text)
+        ]))
+        items.append(ui.text(options_text))
+        items.append(ui.text(f"Correct answer: {correct_answer_index}"))
+        items.append(ui.separator())
+    
+    if items:
+        items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False))
+        q.page['selected_questions'] = ui.form_card(box='right', items=items)
+    else:
+        q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
 
-
-
-
-
-
-#async def stream_updates_to_ui(q: Q):
-#    """
-#    Update the app's UI every 0.1 second with values from our chatbot interaction
-#    :param q: The query object stored by H2O Wave with information about the app and user behavior.
-#    """
-#    while q.client.chatbot_interaction.responding:
-#        q.page["generated_questions"].generated_questions.content = q.client.chatbot_interaction.content_to_show
-#        await q.page.save()
-#        await q.sleep(0.1)
-#
-#    q.page["generated_questions"].generated_questions.content = q.client.chatbot_interaction.content_to_show
-#    await q.page.save()
-
-
-
+    await q.page.save()
 
 
 def chat(chatbot_interaction):
@@ -221,7 +225,7 @@ def chat(chatbot_interaction):
                 prompt_query = prompt_query,
                 timeout=60,
                 callback=stream_response,
-                llm_args={"temperature": 0.9},
+                llm_args={"temperature": 0.5},
                 llm = 'gpt-4-1106-preview',
             )
 
