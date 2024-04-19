@@ -89,10 +89,6 @@ def landing_page_layout(q: Q):
         title=f"{q.app.toml['App']['Title']}",
         subtitle=q.app.toml["App"]["Description"],
         icon="Question",
-        items=[
-            ui.persona(title="Guest User", initials_color="yellow",
-                       initials="G", size="xs"),
-        ]
     )
 
     q.page["footer"] = ui.footer_card(

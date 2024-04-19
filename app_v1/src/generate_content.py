@@ -14,7 +14,7 @@ import json
 def initialize_generate_content_client(q):
     logger.info("")
     q.client.chapter_name = ''
-    q.client.question_quantity = '(Minimum 3 questions)'
+    q.client.question_quantity = ''
     if 'current_selected_questions' not in q.client:
         q.client.current_selected_questions = []
 
@@ -42,6 +42,8 @@ async def side_input_generate_content(q):
 #edited to accomodate error
 @on()
 async def generate_prompt(q: Q):
+    if  q.page["questions_with_selections"]:
+         del q.page["questions_with_selections"]
     logger.info("Generating questions")
     prompt = f"Generate {q.client.question_quantity} MCQ questions based on given documents."
     q.client.prompt = prompt
@@ -49,6 +51,15 @@ async def generate_prompt(q: Q):
 
     max_attempts = 5
     attempt_count = 0
+
+    q.page["loading_indicator"] = ui.form_card(
+        box="center",
+        items=[
+            ui.image(path=q.app.load, width="470px", title=""),  # Display the custom loading icon
+            ui.label("Brewing up some fascinating questions... ☕"),
+        ]
+    )
+    await q.page.save()
 
     while attempt_count < max_attempts:
         attempt_count += 1
@@ -78,6 +89,7 @@ async def generate_prompt(q: Q):
             items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
 
             q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
+            del q.page["loading_indicator"]
             await q.page.save()
 
             break
@@ -87,6 +99,7 @@ async def generate_prompt(q: Q):
                 logger.warning(f"Attempt {attempt_count}: Incorrect response format. Retrying...")
             else:
                 logger.error("Maximum attempts reached. Unable to generate valid questions.")
+                del q.page["loading_indicator"]
                 q.page["error_message"] = ui.form_card(box="center", items=[ui.text("Error: Unable to generate valid questions. Please try again.")])
                 await q.page.save()
 
