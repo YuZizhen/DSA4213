@@ -13,8 +13,8 @@ import json
 #default number shown when app start
 def initialize_generate_content_client(q):
     logger.info("")
-    q.client.chapter_name = ''
-    q.client.question_quantity = ''
+    q.client.chapter_name = 'The Holocaust'
+    q.client.question_quantity = '3'
     if 'current_selected_questions' not in q.client:
         q.client.current_selected_questions = []
 
@@ -22,7 +22,7 @@ def initialize_generate_content_client(q):
 async def side_input_generate_content(q):
     logger.info("")
     clear_cards(q)
-    chapters = ['The Holocaust', 'Hundred Years War', 'War and the Other', 'The Vikings']
+    chapters = ['The Holocaust', 'Hundred Years War', 'War and the Other', 'The Vikings', 'War On Cities Manlia']
     quantities = [str(i) for i in range(3, 11)]
 
     #main ui for USER INPUT on the left
