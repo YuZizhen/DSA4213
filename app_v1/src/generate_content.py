@@ -201,17 +201,17 @@ async def generate_file(q: Q):
     file_path = '../../backend_api/gform/gform_generate.py'
 
     try:
-        # Run the Python file as a separate process
-        subprocess.run(['python', file_path], check=True)
+        # Run the Python file in a separate process
+        subprocess.Popen(['python', file_path])
 
         # Display a success message
-        q.page['generate_message'] = ui.form_card(box='right', items=[ui.text('File generated successfully.')])
-    except subprocess.CalledProcessError as e:
-        # Display an error message if the process returns a non-zero exit code
-        q.page['generate_message'] = ui.form_card(box='right', items=[ui.text(f'Error generating file: {str(e)}')])
+        print("Generation Starting")
     except Exception as e:
-        # Display an error message if any other exception occurs
-        q.page['generate_message'] = ui.form_card(box='right', items=[ui.text(f'Error generating file: {str(e)}')])
+        # Display an error message if any exception occurs
+        print(f'Error starting file generation: {str(e)}')
+
+    # Remove the loading indicator
+    del q.page['loading_indicator']
 
     await q.page.save()
 
