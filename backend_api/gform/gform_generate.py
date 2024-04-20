@@ -49,7 +49,7 @@ form_service = discovery.build(
 ####### Authentication Done #########
 ######################################
 
-result = gf.create_new_quiz('test function', form_service = form_service)
+result = gf.create_new_quiz('History MCQ', form_service = form_service)
 form_id = result["formId"]
 
 for question in question_list:
