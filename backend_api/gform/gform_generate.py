@@ -6,6 +6,7 @@ from httplib2 import Http
 from oauth2client import client, file, tools
 import os
 import ast
+import webbrowser
 
 # Import questions, update here for actual input
 #### For testing #############
@@ -54,3 +55,10 @@ form_id = result["formId"]
 for question in question_list:
     cur_qn = gf.create_new_qn(question)
     cur_result = gf.add_qn(cur_qn, form_service = form_service, form_id=form_id)
+
+
+#####################################
+## Open Form in browser after generation
+
+url = "https://docs.google.com/forms/u/0/"
+webbrowser.open(url)
