@@ -144,6 +144,7 @@ async def submit_selections(q: Q):
     
     if items:
         items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False))
+        items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))  # Add the "Generate" button
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
     else:
         q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
@@ -188,6 +189,29 @@ async def remove_selections(q: Q):
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
     else:
         q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
+
+    await q.page.save()
+
+##Google form!!!!!###
+import os
+import subprocess
+
+@on('generate_file')
+async def generate_file(q: Q):
+    file_path = '../../backend_api/gform/gform_generate.py'
+
+    try:
+        # Run the Python file as a separate process
+        subprocess.run(['python', file_path], check=True)
+
+        # Display a success message
+        q.page['generate_message'] = ui.form_card(box='right', items=[ui.text('File generated successfully.')])
+    except subprocess.CalledProcessError as e:
+        # Display an error message if the process returns a non-zero exit code
+        q.page['generate_message'] = ui.form_card(box='right', items=[ui.text(f'Error generating file: {str(e)}')])
+    except Exception as e:
+        # Display an error message if any other exception occurs
+        q.page['generate_message'] = ui.form_card(box='right', items=[ui.text(f'Error generating file: {str(e)}')])
 
     await q.page.save()
 

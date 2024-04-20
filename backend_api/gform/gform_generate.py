@@ -10,7 +10,7 @@ import webbrowser
 
 # Import questions, update here for actual input
 #### For testing #############
-with open('sample_output_selected.txt', 'r') as input_file:
+with open('../../backend_api/gform/sample_output_selected.txt', 'r') as input_file:
     llm_output = input_file.read()
 
 content = ast.literal_eval(llm_output)
@@ -18,7 +18,7 @@ content = ast.literal_eval(llm_output)
 #### For connection #############
 # content = ast.literal_eval(llm_output.content)
 
-# question_list = qnformat.format_question(content)
+question_list = qnformat.format_question(content)
 
 question_list = qnformat.format_question_from_selected(content)
 
@@ -31,10 +31,10 @@ question_list = qnformat.format_question_from_selected(content)
 SCOPES = "https://www.googleapis.com/auth/forms.body"
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 
-store = file.Storage("token.json")
+store = file.Storage("../../backend_api/gform/token.json")
 creds = None
 if not creds or creds.invalid:
-  flow = client.flow_from_clientsecrets("client_secrets.json", SCOPES)
+  flow = client.flow_from_clientsecrets("../../backend_api/gform/client_secrets.json", SCOPES)
   creds = tools.run_flow(flow, store)
 
 form_service = discovery.build(
