@@ -9,7 +9,7 @@ import ast
 
 # Import questions, update here for actual input
 #### For testing #############
-with open('sample_output.txt', 'r') as input_file:
+with open('sample_output_selected.txt', 'r') as input_file:
     llm_output = input_file.read()
 
 content = ast.literal_eval(llm_output)
@@ -17,7 +17,10 @@ content = ast.literal_eval(llm_output)
 #### For connection #############
 # content = ast.literal_eval(llm_output.content)
 
-question_list = qnformat.format_question(content)
+# question_list = qnformat.format_question(content)
+
+question_list = qnformat.format_question_from_selected(content)
+
 
 
 ######################################
