@@ -1,0 +1,33 @@
+[App]
+Name = "ai.h2o.wave.question_generator"
+Version = "0.0.1"
+Title = "MCQ Master"
+Description = "Generate questions based on chapter name and quantity needed"
+Tags = ["GENERATIVE_AI", "OSS", "EDUCATION"]
+LongDescription = "LongDescription.md"
+InstanceLifecycle = "MANAGED"
+
+[Runtime]
+Module = "src.app"
+EnableOIDC = false
+MemoryLimit = "16Gi"
+MemoryReservation = "16Gi"
+
+[[Env]]
+Name= "LOGO"
+Value = "https://h2o.ai/content/experience-fragments/h2o/us/en/site/header/master/_jcr_content/root/container/header_copy/logo.coreimg.svg/1696007565253/h2o-logo.svg"
+
+[[Env]]
+Name = "H2OGPTE_API_TOKEN"
+Secret = "h2ogpte-shared"
+SecretKey = "h2ogpte-key"
+
+[[Env]]
+Name = "H2OGPTE_URL"
+Secret = "h2ogpte-shared"
+SecretKey = "h2ogpte-url"
+
+[[Env]]
+Name = "HEAP_ID"
+Secret = "heap-analytics"
+SecretKey = "id"
