@@ -1,5 +1,4 @@
-from loguru import logger
-from h2o_wave import on, ui
+from h2o_wave import ui
 import os
 import hashlib
 
