@@ -21,6 +21,7 @@ Our team comprises of 5 members:
 - **Select good questions**: From the generated questions, select the desired ones and click `Submit Selections` button to temporarily save them in a separate box. User may continue to generate different questions based on the same chapter or choose other chapters to generate. 
 - **Delete chosen question**: Finalize the chosen question by selecting the unwanted ones and and click `Remove Selected`.
 - **Output google form**: Click `Generate Google Form` and get a google form with the final set of questions.
+- **Reset**(newly added):Quickly remove all the chosen questions by clicking `Reset`. 
   
 ![image](https://github.com/YuZizhen/DSA4213/assets/142798627/54493cc7-67a8-42ae-8c91-ac8a305fb3e5)
 
