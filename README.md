@@ -47,14 +47,14 @@ export LOGO="https://h2o.ai/content/experience-fragments/h2o/us/en/site/header/m
   - `/static` - Contains all the static content required by the app.
   - `LongDescription.md`
   - `README.md` - The README file provides an overview of frontend development.
-- `/backend_api` - This is the folder for testing files of the H2O LLM API
+- `/backend_api` - This is the folder for testing files of the H2O LLM API.
   - `/functions` - Some helper functions
-    - `parse_output.py` - This function is used to evaulate LLM output as python codes
+    - `parse_output.py` - This function is used to evaulate LLM output as python codes.
   - `/gform` - This is the folder for testing files of Google forms
-    - `gform_functions.py` - 
-    - `gform_generate.py`
-    - `question_format_conversion.py`
-  - `/prompts_4` - This is the selected prompt set,out of the 4 prompts we tested
+    - `gform_functions.py` - Functions related to Google Form, used in `gform_generate.py`.
+    - `gform_generate.py` - Generates Google Form using user selected MCQ.
+    - `question_format_conversion.py` - Functions to format MCQ for `gform_generate.py`.
+  - `/prompts_4` - This is the selected prompt set.
 - `requirements_current.txt`
 - `README.md` - The README file provides an overview of the project.
 
