@@ -10,7 +10,7 @@ import webbrowser
 
 # Import questions, update here for actual input
 #### For testing #############
-with open('../../backend_api/gform/sample_output_selected.txt', 'r') as input_file:
+with open('../../backend_api/gform/selected_questions.txt', 'r') as input_file:
     llm_output = input_file.read()
 
 content = ast.literal_eval(llm_output)
