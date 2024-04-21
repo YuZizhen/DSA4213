@@ -200,7 +200,11 @@ import subprocess
 async def generate_file(q: Q):
     file_path = '../../backend_api/gform/gform_generate.py'
 
+    save_path = '../../backend_api/gform/selected_questions.txt'
     try:
+        with open(save_path, 'w') as file:
+            file.write(json.dumps(q.client.current_selected_questions))
+
         # Run the Python file in a separate process
         subprocess.Popen(['python', file_path])
 
