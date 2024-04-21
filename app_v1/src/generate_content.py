@@ -182,6 +182,7 @@ async def remove_selections(q: Q):
     
     if items:
         items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False))
+        items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
     else:
         q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
