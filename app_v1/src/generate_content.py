@@ -1,16 +1,13 @@
-import ast
-import os
-import asyncio
 from h2o_wave import on, ui, Q
 from h2ogpte import H2OGPTE
 from loguru import logger
 from h2ogpte.types import ChatMessage, PartialChatMessage
 from wave_utils import clear_cards
-import logging
+import ast
 import json
-# logging.basicConfig(level=logging.DEBUG)
+import subprocess
 
-#default number shown when app start
+# Show default value when app start
 def initialize_generate_content_client(q):
     logger.info("")
     q.client.chapter_name = 'War On Cities Manlia'
@@ -18,14 +15,15 @@ def initialize_generate_content_client(q):
     if 'current_selected_questions' not in q.client:
         q.client.current_selected_questions = []
 
-#range of number availbale for selection
+
+# Range of number availbale for selection
 async def side_input_generate_content(q):
     logger.info("")
     clear_cards(q)
     chapters = ['War On Cities Manlia', 'Hundred Years War', 'War and the Other', 'The Vikings', 'The Holocaust']
     quantities = [str(i) for i in range(3, 11)]
 
-    #main ui for USER INPUT on the left
+    # Main UI for *USER INPUT* on the left
     q.page['help'] = ui.form_card(
         box='left',
         items=[
@@ -33,22 +31,21 @@ async def side_input_generate_content(q):
             ui.text("Select the chapter name and the number of questions to generate."),
             ui.dropdown(name='chapter_name', label='Chapter Name', value=q.client.chapter_name, choices=[ui.choice(name=c, label=c) for c in chapters]),
             ui.dropdown(name='question_quantity', label='Number of Questions', value=q.client.question_quantity, choices=[ui.choice(name=q, label=q) for q in quantities]),
-            ui.inline(justify='center', items=[
-                ui.button(name='generate_prompt', label='Generate Questions', primary=True)
-            ]),
+            ui.inline(justify='center', items=[ui.button(name='generate_prompt', label='Generate Questions', primary=True)]),
         ]
     )
 
-#edited to accomodate error
+
+# Edited generate_prompt to accomodate error
 @on()
 async def generate_prompt(q: Q):
-    if  q.page["questions_with_selections"]:
-         del q.page["questions_with_selections"]
+    if q.page["questions_with_selections"]:
+        del q.page["questions_with_selections"]
+
     logger.info("Generating questions")
     prompt = f"Generate {q.client.question_quantity} MCQ questions based on given documents."
     q.client.prompt = prompt
     q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt, chapter_name=q.client.chapter_name, question_quantity=q.client.question_quantity)
-
     max_attempts = 5
     attempt_count = 0
 
@@ -152,7 +149,7 @@ async def submit_selections(q: Q):
     await q.page.save()
 
 
-#new function to remove selection
+# New function to remove selection
 @on('remove_selections')
 async def remove_selections(q: Q):
     updated_selections = []
@@ -192,15 +189,13 @@ async def remove_selections(q: Q):
 
     await q.page.save()
 
-##Google form!!!!!###
-import os
-import subprocess
 
+## Google form!!!!!###
 @on('generate_file')
 async def generate_file(q: Q):
     file_path = '../../backend_api/gform/gform_generate.py'
-
     save_path = '../../backend_api/gform/selected_questions.txt'
+
     try:
         with open(save_path, 'w') as file:
             file.write(json.dumps(q.client.current_selected_questions))
@@ -234,16 +229,10 @@ def chat(chatbot_interaction):
         """
         chatbot_interaction.update_response(message)
 
-    # api_key = 'sk-xjaaELLATk2Z8apfbv1nozXFTrHmQDuQHOLsOv5V3SR6wy0U'
     api_key = 'sk-s664ThZtgjVvGG3Fl1mGN9gOVnfpg85dZBwMWQhb8YBqXbOT'
-    # client = H2OGPTE(address=os.getenv("H2OGPTE_URL"), api_key=os.getenv("H2OGPTE_API_TOKEN"))
 
     try:
         client = H2OGPTE(address='https://h2ogpte.genai.h2o.ai', api_key=api_key)
-
-        # collection_id = client.create_collection("temp", "")
-        # chat_session_id = client.create_chat_session(collection_id)
-        collection_names = [item.name for item in client.list_recent_collections(0, 1000)]
         target_chapter_name =  chatbot_interaction.chapter_name
         curr_collection_id = [item.id for item in client.list_recent_collections(0, 1000) if item.name == target_chapter_name][0]
         chat_session_id = client.create_chat_session(curr_collection_id)
@@ -257,7 +246,7 @@ def chat(chatbot_interaction):
         with open('../../backend_api/prompts_4/prompt_query.txt', 'r') as file:
             prompt_query = file.read()
 
-        #save the session into "response" 
+        # Save the session into "response" 
         with client.connect(chat_session_id) as session:
             session.query(
                 message = chatbot_interaction.user_message,
@@ -269,11 +258,7 @@ def chat(chatbot_interaction):
                 llm_args={"temperature": 0.5},
                 llm = 'gpt-4-1106-preview',
             )
-
-        #client.delete_chat_sessions([chat_session_id])
         output = chatbot_interaction.llm_response
-        # print(output)
-
         return output
 
     except Exception as e:

@@ -1,11 +1,9 @@
 from h2o_wave import main, app, Q, ui, run_on, copy_expando
-import os
-import toml
-
 from loguru import logger
-
 from generate_content import initialize_generate_content_client, side_input_generate_content, submit_selections
 from wave_utils import heap_analytics
+import os
+import toml
 
 
 @app('/')
@@ -18,9 +16,8 @@ async def serve(q: Q):
     if not q.client.initialized:
         await initialize_session(q)
 
-##    if q.args.setFtp is not None or q.args.timeGoal is not None:
-##        await side_input_generate_content(q)
-
+    ## if q.args.setFtp is not None or q.args.timeGoal is not None:
+    ##     await side_input_generate_content(q)
     await run_on(q)
     await q.page.save()
 
@@ -74,12 +71,11 @@ def landing_page_layout(q: Q):
                     ui.zone(name='header'),
                     ui.zone('body', size='1', direction=ui.ZoneDirection.ROW, zones=[
                         ui.zone(name='left', size='20%'),  # First zone takes up 20% of the space
-                    ui.zone(name='center', size='40%'),  # Second zone takes up 40% of the space
-                    ui.zone(name='right', size='40%'),  # Third zone takes up 40% of the space
+                        ui.zone(name='center', size='40%'),  # Second zone takes up 40% of the space
+                        ui.zone(name='right', size='40%'),  # Third zone takes up 40% of the space
                     ]),
                     ui.zone(name="footer")
                 ]
-
             )
         ]
     )
