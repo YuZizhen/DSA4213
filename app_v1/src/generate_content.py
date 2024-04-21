@@ -9,6 +9,11 @@ import subprocess
 
 # Show default value when app start
 def initialize_generate_content_client(q):
+    """
+    Iinitialize the default values seen by user in the interface.
+
+    Initialize a list for final output. 
+    """
     logger.info("")
     q.client.chapter_name = 'War On Cities Manlia'
     q.client.question_quantity = '3'
@@ -16,8 +21,11 @@ def initialize_generate_content_client(q):
         q.client.current_selected_questions = []
 
 
-# Range of number availbale for selection
+# Range of values availbale for selection
 async def side_input_generate_content(q):
+    """
+    Writes in the loaded chapters into the drop-down list for user to select and defines the range of question numbers user could generate.
+    """
     logger.info("")
     clear_cards(q)
     chapters = ['War On Cities Manlia', 'Hundred Years War', 'War and the Other', 'The Vikings', 'The Holocaust']
@@ -36,26 +44,40 @@ async def side_input_generate_content(q):
     )
 
 
-# Edited generate_prompt to accomodate error
+# main function to generate prompt
 @on()
 async def generate_prompt(q: Q):
-    if q.page["questions_with_selections"]:
+    """
+    Create the "Generate Questions" button.
+
+    Defines what is send to the LLM generator for question generation.
+
+    If there is any error in the LLM response, LLM prompt would be send in again to try to get the correct response.
+
+    Parse the LLM response into the middle section of the screen for viewing.
+
+    Checkbox is there for user to select the questions they want.
+    """
+    if q.page["questions_with_selections"]: #This part here is to ensure the loading screen display correctly when multiple generation is executed
         del q.page["questions_with_selections"]
 
     logger.info("Generating questions")
+
     prompt = f"Generate {q.client.question_quantity} MCQ questions based on given documents."
     q.client.prompt = prompt
     q.client.chatbot_interaction = ChatBotInteraction(user_message=q.client.prompt, chapter_name=q.client.chapter_name, question_quantity=q.client.question_quantity)
-    max_attempts = 5
+
+    max_attempts = 5 #Number of re-tries in case of failure (including initial one)
     attempt_count = 0
 
     q.page["loading_indicator"] = ui.form_card(
         box="center",
         items=[
-            ui.image(path=q.app.load, width="470px", title=""),  # Display the custom loading icon
+            ui.image(path=q.app.load, width="470px", title=""),  
             ui.label("Brewing up some fascinating questions... ☕"),
         ]
-    )
+    ) # Display the custom loading icon
+    
     await q.page.save()
 
     while attempt_count < max_attempts:
@@ -86,7 +108,9 @@ async def generate_prompt(q: Q):
             items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
 
             q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
+
             del q.page["loading_indicator"]
+
             await q.page.save()
 
             break
@@ -96,12 +120,23 @@ async def generate_prompt(q: Q):
                 logger.warning(f"Attempt {attempt_count}: Incorrect response format. Retrying...")
             else:
                 logger.error("Maximum attempts reached. Unable to generate valid questions.")
+
                 del q.page["loading_indicator"]
+
                 q.page["error_message"] = ui.form_card(box="center", items=[ui.text("Error: Unable to generate valid questions. Please try again.")])
+
                 await q.page.save()
 
+#allow user to preview selected questions
 @on('submit_selections')
 async def submit_selections(q: Q):
+    """
+    Create the "Submmit Selections" button.
+
+    Pass the checked question to the right side of the app for final review.
+
+    These questions would again come with checkbox for user to remove the selected questions if they wish.
+    """
     new_selections = []
 
     for index, question_data in enumerate(q.client.llm_response):
@@ -110,15 +145,15 @@ async def submit_selections(q: Q):
             if selected:
                 question_text = f"**{question_data[0]}**"  # Question text
                 options_text = "\n\n".join([f"   {opt_index + 1}. {option}" for opt_index, option in enumerate(question_data[1])])  # Options list
-                correct_option = question_data[2]  # Correct option is now directly a string
-                correct_answer_index = question_data[1].index(correct_option) + 1
+                correct_option = question_data[2]  
+                correct_answer_index = question_data[1].index(correct_option) + 1 # Correct option
                 
                 # Construct the details for the selected question
                 selected_question_details = f"{question_text}\n\n{options_text}\n\nCorrect answer: {correct_answer_index}\n\n"                 
                 new_selections.append(selected_question_details)
 
         except KeyError:
-            continue  # If the checkbox was not found, just continue to the next
+            continue
     
     # Update the list of selected questions with any new selections
     q.client.current_selected_questions.extend(new_selections)
@@ -139,8 +174,9 @@ async def submit_selections(q: Q):
         items.append(ui.separator())
     
     if items:
-        items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False))
-        items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))  # Add the "Generate" button
+        items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False)) # Add the "Remove Selected" button
+        items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))  # Add the "Generate Google Form" button
+
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
     else:
         q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
@@ -148,9 +184,16 @@ async def submit_selections(q: Q):
     await q.page.save()
 
 
-# New function to remove selection
+#function to remove selection
 @on('remove_selections')
 async def remove_selections(q: Q):
+    """
+    Create the "Remove Selected" button.
+
+    Removed the checked question on the right side of the app.
+
+    The preview section on the right would be updated.
+    """
     updated_selections = []
 
     for index, question_details in enumerate(q.client.current_selected_questions):
@@ -166,6 +209,7 @@ async def remove_selections(q: Q):
     
     # Display the updated list of selected questions with inline checkboxes
     items = []
+    
     for index, question_details in enumerate(q.client.current_selected_questions):
         question_lines = question_details.split('\n\n')
         question_text = question_lines[0]
@@ -183,6 +227,7 @@ async def remove_selections(q: Q):
     if items:
         items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False))
         items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))
+
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
     else:
         q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
@@ -190,9 +235,16 @@ async def remove_selections(q: Q):
     await q.page.save()
 
 
-## Google form!!!!!###
+#google form generation
 @on('generate_file')
 async def generate_file(q: Q):
+    """
+    Create the "Generate Google Form" button.
+
+    Parsed all the preview question into a .txt file named "selected_questions.txt"
+
+    gform_generate.py will be called to start the generation of Google Form
+    """
     file_path = '../../backend_api/gform/gform_generate.py'
     save_path = '../../backend_api/gform/selected_questions.txt'
 
@@ -218,13 +270,16 @@ async def generate_file(q: Q):
 def chat(chatbot_interaction):
     """
     Send the user's message to the LLM and save the response
+
     :param chatbot_interaction: Details about the interaction between the user and the LLM
+
     :param chat_session_id: Chat session for these messages
     """
 
     def stream_response(message):
         """
         This function is called by the blocking H2OGPTE function periodically for updating the UI
+
         :param message: response from the LLM, this is either a partial or completed response
         """
         chatbot_interaction.update_response(message)
@@ -265,7 +320,7 @@ def chat(chatbot_interaction):
         logger.error(e)
         return f"Some error occur :(("
 
-
+#Defining a chatbotinteraction class
 class ChatBotInteraction:
     def __init__(self, user_message, chapter_name, question_quantity) -> None:
         self.user_message = user_message
