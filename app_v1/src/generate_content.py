@@ -16,7 +16,7 @@ def initialize_generate_content_client(q):
     """
     logger.info("")
     q.client.chapter_name = 'War On Cities Manlia'
-    q.client.question_quantity = '3'
+    q.client.question_quantity = '1'
     if 'current_selected_questions' not in q.client:
         q.client.current_selected_questions = []
 
@@ -29,7 +29,7 @@ async def side_input_generate_content(q):
     logger.info("")
     clear_cards(q)
     chapters = ['War On Cities Manlia', 'Hundred Years War', 'War and the Other', 'The Vikings', 'The Holocaust']
-    quantities = [str(i) for i in range(3, 11)]
+    quantities = [str(i) for i in range(1, 11)]
 
     # Main UI for *USER INPUT* on the left
     q.page['help'] = ui.form_card(
@@ -60,6 +60,8 @@ async def generate_prompt(q: Q):
     """
     if q.page["questions_with_selections"]: #This part here is to ensure the loading screen display correctly when multiple generation is executed
         del q.page["questions_with_selections"]
+    if q.page["error_message"]:
+        del q.page["error_message"]
 
     logger.info("Generating questions")
 
@@ -89,7 +91,7 @@ async def generate_prompt(q: Q):
             q.client.llm_response = response
         
             items = []
-            for question_index in range(0, len(q.client.llm_response)):
+            for question_index in range(0, int(q.client.question_quantity)):
                 question = q.client.llm_response[question_index]
                 label = 'Question ' + str(question_index + 1) + ": " + question[0]
             
@@ -101,7 +103,7 @@ async def generate_prompt(q: Q):
                     if question[1][option_index] == correct_option:
                         correct_option_index = str(option_index + 1)
             
-                items.append(ui.text("Correct answer: " + correct_option_index))  
+                items.append(ui.text("Correct answer: " + str(correct_option_index)))  
             
                 items.append(ui.text("<br/>"))
             
@@ -115,11 +117,18 @@ async def generate_prompt(q: Q):
 
             break
 
-        except (ValueError, IndexError, KeyError):
+        #providing possible errors and the solution
+        except (ValueError, IndexError, KeyError, SyntaxError) as e:
             if attempt_count < max_attempts:
-                logger.warning(f"Attempt {attempt_count}: Incorrect response format. Retrying...")
+                logger.warning(f"WARNING!!!! Attempt {attempt_count}: Question Generation failed, error is: {str(e)}. Retrying...")
+                if str(e)[0:9] == "unmatched":
+                    logger.warning(f"This is likely to be an issue with the LLM response format.")
+                if str(e)[0:7] == "invalid":
+                    logger.warning(f"This is likely to be an issue with the LLM response format.")
+                if str(e)[0:12] == "unterminated":
+                    logger.warning(f"This is likely to be an issue with the LLM response format.")
             else:
-                logger.error("Maximum attempts reached. Unable to generate valid questions.")
+                logger.error(f"WARNING!!!! Attempt {attempt_count}: Maximum attempts reached. Unable to generate valid questions. Please consider using GPT 4.0 as the LLM.")
 
                 del q.page["loading_indicator"]
 
@@ -175,14 +184,52 @@ async def submit_selections(q: Q):
     
     if items:
         items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False)) # Add the "Remove Selected" button
+        items.append(ui.button(name='reset_selections', label='Reset', primary=False))
         items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))  # Add the "Generate Google Form" button
 
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
     else:
         q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
 
+    # Reset the checkboxes in the middle part to their default unchecked state
+    items = []
+    for question_index in range(0, int(q.client.question_quantity)):
+        question = q.client.llm_response[question_index]
+        label = 'Question ' + str(question_index + 1) + ": " + question[0]
+            
+        items.append(ui.checkbox(name=f'select_{question_index}', label=f"{label}", value=False))
+        correct_option = question[2]
+        correct_option_index = 0
+        for option_index in range(0, len(question[1])):
+            items.append(ui.text(str(option_index + 1) + ". " + question[1][option_index]))
+            if question[1][option_index] == correct_option:
+                correct_option_index = str(option_index + 1)
+            
+        items.append(ui.text("Correct answer: " + str(correct_option_index)))  
+            
+        items.append(ui.text("<br/>"))
+    
+    items.append(ui.button(name='submit_selections', label='Submit Selections', primary=True))
+    
+    q.page["questions_with_selections"] = ui.form_card(box="center", items=items)
+    
     await q.page.save()
 
+#function to reseet selection
+@on('reset_selections')
+async def reset_right_side(q: Q):
+    """
+    Create the "Reset" button.
+
+    Removed all questions on the right side of the app.
+
+    The preview section on the right would be cleared.
+    """
+    q.client.current_selected_questions = []  # Clear the list of selected questions
+    
+    q.page['selected_questions'] = ui.form_card(box='right', items=[ui.text('No questions selected.')])
+    
+    await q.page.save()
 
 #function to remove selection
 @on('remove_selections')
