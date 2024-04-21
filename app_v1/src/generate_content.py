@@ -184,7 +184,7 @@ async def submit_selections(q: Q):
     
     if items:
         items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False)) # Add the "Remove Selected" button
-        items.append(ui.button(name='reset_selections', label='Reset', primary=False))
+        items.append(ui.button(name='reset_selections', label='Reset', primary=False)) #Add the "Reset" button
         items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))  # Add the "Generate Google Form" button
 
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
@@ -273,6 +273,7 @@ async def remove_selections(q: Q):
     
     if items:
         items.append(ui.button(name='remove_selections', label='Remove Selected', primary=False))
+        items.append(ui.button(name='reset_selections', label='Reset', primary=False))
         items.append(ui.button(name='generate_file', label='Generate Google Form', primary=True))
 
         q.page['selected_questions'] = ui.form_card(box='right', items=items)
