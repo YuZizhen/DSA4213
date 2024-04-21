@@ -1,1 +1,0 @@
-[["Which country published the Lieber Code?",["The United States","The United Kingdom","Korea","Japan"],"The United States"],["When was the Liber Code published?",["1983","1990","1978","2000"],"1983"],[" According to the Nuremberg Laws, what determines whether someone is considered a Jew?",["Race","Religion","Customs","All of the above"],"All of the above"]]
