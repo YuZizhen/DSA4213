@@ -1,4 +1,4 @@
-from h2o_wave import app, Q, ui, run_on, copy_expando
+from h2o_wave import main, app, Q, ui, run_on, copy_expando
 from loguru import logger
 from generate_content import initialize_generate_content_client, side_input_generate_content, submit_selections
 from wave_utils import heap_analytics

@@ -1,8 +1,8 @@
 [App]
 Name = "ai.h2o.wave.question_generator"
 Version = "0.0.1"
-Title = "Question Generator"
-Description = "Generate questions based on chapter number and quantity needed"
+Title = "MCQ Master"
+Description = "Generate questions based on chapter name and quantity needed"
 Tags = ["GENERATIVE_AI", "OSS", "EDUCATION"]
 LongDescription = "LongDescription.md"
 InstanceLifecycle = "MANAGED"

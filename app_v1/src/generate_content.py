@@ -112,7 +112,6 @@ async def submit_selections(q: Q):
                 options_text = "\n\n".join([f"   {opt_index + 1}. {option}" for opt_index, option in enumerate(question_data[1])])  # Options list
                 correct_option = question_data[2]  # Correct option is now directly a string
                 correct_answer_index = question_data[1].index(correct_option) + 1
-
                 
                 # Construct the details for the selected question
                 selected_question_details = f"{question_text}\n\n{options_text}\n\nCorrect answer: {correct_answer_index}\n\n"                 

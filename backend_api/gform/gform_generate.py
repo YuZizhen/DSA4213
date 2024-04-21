@@ -1,10 +1,8 @@
-import pandas as pd
 import gform_functions as gf
 import question_format_conversion as qnformat
 from apiclient import discovery
 from httplib2 import Http
 from oauth2client import client, file, tools
-import os
 import ast
 import webbrowser
 
